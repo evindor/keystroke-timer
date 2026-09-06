@@ -34,20 +34,26 @@ function readDuration(text, bareIsMinutes) {
     return { seconds: secs, rest: t.slice(clock[0].length).trim() }
   }
   var total = 0, consumed = 0, parts = 0
-  var re = /^(\d+(?:\.\d+)?)\s*([a-zA-Z]+)?(?=\s|\d|$)/
+  // A number with its unit attached (10m) or separated by spaces (10 min); a
+  // number followed by a word that is not a unit is a bare number and the
+  // word starts the label ("timer 10 years" is ten minutes labelled "years").
+  var re = /^(\d+(?:\.\d+)?)(?:([a-zA-Z]+)|\s+([a-zA-Z]+)(?=\s|$))?(?=\s|\d|$)/
   while (true) {
-    var m = re.exec(t.slice(consumed))
+    var rest = t.slice(consumed)
+    var m = re.exec(rest)
     if (!m) break
-    var n = Number(m[1]), unit = (m[2] || "").toLowerCase()
-    if (unit) {
-      if (!UNIT[unit]) break
-      total += n * UNIT[unit]
-    } else {
+    var n = Number(m[1]), unit = (m[2] || m[3] || "").toLowerCase(), width = m[0].length
+    if (unit && !UNIT[unit]) {
+      if (m[2]) break                       // "10x": not a duration at all
+      unit = ""; width = m[1].length        // "10 years": bare number, keep the word
+    }
+    if (unit) total += n * UNIT[unit]
+    else {
       if (parts || !bareIsMinutes) break
       total += n * 60
     }
     parts++
-    consumed += m[0].length
+    consumed += width
     var ws = /^\s+/.exec(t.slice(consumed))
     if (ws) consumed += ws[0].length
     if (!unit) break
