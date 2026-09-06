@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.evindor.keystroke-timer",
+  "name": "Keystroke Timer",
+  "version": "1.0.0",
+  "author": "Arseniy Zarechnev",
+  "license": "MIT",
+  "description": "Countdown timers for the Keystroke command palette: timer 10m tea",
+  "homepage": "https://github.com/evindor/keystroke-timer",
+  "kinds": ["service"],
+  "keepLoaded": true,
+  "entryPoints": {
+    "service": "Service.qml"
+  },
+  "x-keystroke": {
+    "apiVersion": 1
+  }
+}

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Unit tests, manifest validation and qmllint for the extension.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+(cd "$ROOT/tests" && QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software /usr/lib/qt6/bin/qmltestrunner -silent -input .)
+omarchy plugin validate "$ROOT"
+/usr/lib/qt6/bin/qmllint -I /usr/lib/qt6/qml "$ROOT/Service.qml"
